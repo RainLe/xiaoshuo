@@ -1,0 +1,10 @@
+
+.card {
+	background: none;
+	border: none;
+}
+
+.paragraph {
+	white-space: pre-line;
+	font-size: 1.1rem;
+}

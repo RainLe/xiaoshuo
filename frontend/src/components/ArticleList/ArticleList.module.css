@@ -1,0 +1,29 @@
+.card {
+	margin-bottom: 12px;
+}
+.title {
+	margin-bottom: 8px;
+	color: #34495e;
+	font-size: 1.3rem;
+}
+.link {
+	color: #34495e;
+	text-decoration: none;
+	font-weight: 600;
+	transition: color 0.2s;
+}
+.link:hover {
+	color: #1677ff;
+	text-decoration: underline;
+}
+.meta {
+	display: block;
+	margin-bottom: 8px;
+	color: #636e72;
+	font-size: 0.98rem;
+}
+.summary {
+	margin-top: 10px;
+	color: #222;
+	line-height: 1.7;
+}

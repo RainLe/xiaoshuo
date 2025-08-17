@@ -1,0 +1,65 @@
+h1 {
+  color: #2c3e50;
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+}
+
+.query-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  justify-content: center;
+}
+
+.query-bar input, .query-bar select {
+  padding: 8px 12px;
+  border: 1px solid #dfe6e9;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.query-bar button {
+  padding: 8px 20px;
+  background: #2980b9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.query-bar button:hover {
+  background: #3498db;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #f8f9fa;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 20px 18px;
+  text-align: left;
+}
+
+li h2 {
+  margin: 0 0 8px 0;
+  color: #34495e;
+  font-size: 1.3rem;
+}
+
+li p {
+  margin: 4px 0;
+  color: #636e72;
+  font-size: 0.98rem;
+}
+
+li div {
+  margin-top: 10px;
+  color: #222;
+  line-height: 1.7;
+}

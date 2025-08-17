@@ -1,0 +1,6 @@
+.query-bar .query-btn:hover {
+  box-shadow: 0 4px 16px rgba(22, 119, 255, 0.15);
+}
+.query-bar .query-btn:active {
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.25);
+}

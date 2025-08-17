@@ -1,0 +1,13 @@
+.queryBar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.queryBtn:hover {
+  box-shadow: 0 4px 16px rgba(22, 119, 255, 0.15);
+}
+.queryBtn:active {
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.25);
+}
