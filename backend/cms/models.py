@@ -1,10 +1,24 @@
 
 from django.db import models
+from django.contrib.auth.models import User
 
-class Category(models.Model):
+
+class Profile(models.Model):
+	ROLE_CHOICES = (
+		('reader', '读者'),
+		('author', '作者'),
+		('editor', '编辑'),
+	)
+	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+	role = models.CharField(max_length=16, choices=ROLE_CHOICES, default='reader', verbose_name='角色')
+
+	class Meta:
+		db_table = 'profile'
 	"""
 	栏目实体对象，表示文章所属的分类。
 	"""
+
+class Category(models.Model):
 	name = models.CharField(max_length=32, unique=True, verbose_name="栏目名称")
 	description = models.CharField(max_length=128, unique=True, verbose_name="栏目描述")
 	@property
@@ -35,6 +49,13 @@ class Item(models.Model):
 	summary = models.CharField(max_length=512, blank=True, verbose_name="文章摘要")
 	pub_date = models.DateTimeField(auto_now_add=True, verbose_name="发表时间")
 	category_id = models.IntegerField(verbose_name="所属栏目ID")
+	author_id = models.IntegerField(verbose_name="作者ID")  # 对应 auth_user 的 id
+	STATUS_CHOICES = (
+		('draft', '草稿'),
+		('unpublished', '未发布'),
+		('published', '已发布'),
+	)
+	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='draft', verbose_name="文章状态")
 	@property
 	def chapters(self):
 		"""

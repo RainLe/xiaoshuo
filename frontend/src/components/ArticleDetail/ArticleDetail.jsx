@@ -9,7 +9,10 @@ const ArticleDetail = ({ article }) => {
 
   useEffect(() => {
     if (article && (!chapterList || chapterList.length === 0)) {
-      fetch(`http://localhost:8000/api/chapters/?item_id=${article.id}`)
+      const token = localStorage.getItem('token');
+      fetch(`http://localhost:8000/api/chapters/?item_id=${article.id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      })
         .then(res => res.json())
         .then(data => setChapterList(data));
     } else if (chapterList) {
@@ -29,7 +32,7 @@ const ArticleDetail = ({ article }) => {
 
   return (
     <div className={pageStyles.page}>
-      <Typography.Title level={2} className={styles.title}>{article.title}</Typography.Title>
+     <Typography.Title level={2} className={styles.title}>{article.title}</Typography.Title>
       <Typography.Text type="secondary" className={styles.meta}>
         发表时间：{new Date(article.pub_date).toLocaleString()}
       </Typography.Text>

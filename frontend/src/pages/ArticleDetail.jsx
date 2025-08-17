@@ -8,7 +8,10 @@ const ArticleDetailPage = () => {
   const [article, setArticle] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/items/${id}/`)
+    const token = localStorage.getItem('token');
+    fetch(`http://localhost:8000/api/items/${id}/`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
       .then(res => res.json())
       .then(data => setArticle(data));
   }, [id]);

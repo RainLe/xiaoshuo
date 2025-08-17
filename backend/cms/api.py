@@ -3,7 +3,8 @@ from django.conf import settings
 from pathlib import Path
 from rest_framework import viewsets, filters
 from rest_framework.response import Response
-from .models import Category, Item, Chapter
+from django.db import models
+from .models import Category, Item, Chapter, Profile
 from .serializers import CategorySimpleSerializer, ItemSerializer, ChapterSerializer
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -27,10 +28,26 @@ class ItemViewSet(viewsets.ModelViewSet):
     ordering_fields = ['pub_date']
 
     def get_queryset(self):
+        user = self.request.user
         queryset = super().get_queryset()
         category_id = self.request.query_params.get('category')
         if category_id:
             queryset = queryset.filter(category_id=category_id)
+        # 权限过滤
+        print('user=', user)
+        if not user.is_authenticated:
+            return queryset.none()
+        profile = Profile.objects.filter(user=user).first()
+        print('profile=', profile)
+        role = profile and profile.role or 'reader'
+        if role == 'reader':
+            queryset = queryset.filter(status='published')
+        elif role == 'author':
+            queryset = queryset.filter(models.Q(status='published') | models.Q(author_id=user.id))
+        elif role == 'editor':
+            pass  # 编辑可看全部
+        else:
+            queryset = queryset.filter(status='published')
         return queryset
 
 

@@ -20,6 +20,7 @@ from django.urls import path, include
 
 from rest_framework import routers
 from cms.api import CategoryViewSet, ItemViewSet, ChapterViewSet
+from cms.api_user import LoginView, RegisterView, UserInfoView
 
 router = routers.DefaultRouter()
 router.register(r'categories', CategoryViewSet)
@@ -29,4 +30,7 @@ router.register(r'chapters', ChapterViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/login/', LoginView.as_view()),
+    path('api/register/', RegisterView.as_view()),
+    path('api/userinfo/', UserInfoView.as_view()),
 ]

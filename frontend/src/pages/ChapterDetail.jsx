@@ -7,7 +7,10 @@ const ChapterDetailPage = () => {
   const [chapter, setChapter] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/chapters/${id}/`)
+    const token = localStorage.getItem('token');
+    fetch(`http://localhost:8000/api/chapters/${id}/`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
       .then(res => res.json())
       .then(data => {
         setChapter(data);

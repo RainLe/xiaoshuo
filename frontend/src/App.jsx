@@ -3,6 +3,9 @@ import './App.css';
 import Home from './pages/Home';
 import ArticleDetail from './pages/ArticleDetail';
 import ChapterDetail from './pages/ChapterDetail';
+import Login from './pages/Login';
+import UserInfo from './pages/UserInfo';
+import ProtectedRoute from './components/ProtectedRoute';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'antd/dist/reset.css';
 
@@ -13,17 +16,23 @@ const App = () => {
   const [query, setQuery] = useState({ title: '', category: '', pub_date: '' });
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/categories/')
+    const token = localStorage.getItem('token');
+    fetch('http://localhost:8000/api/categories/', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
       .then(res => res.json())
       .then(data => setCategories(data));
   }, []);
 
   const fetchItems = () => {
+    const token = localStorage.getItem('token');
     let url = 'http://localhost:8000/api/items/?';
     if (query.title) url += `search=${query.title}&`;
     if (query.category) url += `category=${query.category}&`;
     if (query.pub_date) url += `ordering=pub_date&`;
-    fetch(url)
+    fetch(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
       .then(res => res.json())
       .then(data => setItems(data));
   };
@@ -36,17 +45,21 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/userinfo" element={<ProtectedRoute><UserInfo /></ProtectedRoute>} />
         <Route path="/" element={
-          <Home
-            items={items}
-            categories={categories}
-            query={query}
-            setQuery={setQuery}
-            fetchItems={fetchItems}
-          />
+          <ProtectedRoute>
+            <Home
+              items={items}
+              categories={categories}
+              query={query}
+              setQuery={setQuery}
+              fetchItems={fetchItems}
+            />
+          </ProtectedRoute>
         } />
-        <Route path="/article/:id" element={<ArticleDetail />} />
-        <Route path="/chapter/:id" element={<ChapterDetail />} />
+        <Route path="/article/:id" element={<ProtectedRoute><ArticleDetail /></ProtectedRoute>} />
+        <Route path="/chapter/:id" element={<ProtectedRoute><ChapterDetail /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
