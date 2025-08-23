@@ -1,44 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import Home from './pages/Home';
-import ArticleDetail from './pages/ArticleDetail';
-import ChapterDetail from './pages/ChapterDetail';
-import Login from './pages/Login';
-import UserInfo from './pages/UserInfo';
-import ProtectedRoute from './components/ProtectedRoute';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import 'antd/dist/reset.css';
-
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Home from "./pages/Home";
+import ArticleDetail from "./pages/ArticleDetail";
+import ChapterDetail from "./pages/ChapterDetail";
+import Login from "./pages/Login";
+import UserInfo from "./pages/UserInfo";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "antd/dist/reset.css";
 
 const App = () => {
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [query, setQuery] = useState({ title: '', category: '', pub_date: '' });
+  const [query, setQuery] = useState({ title: "", category: "", pub_date: "" });
+  const [total, setTotal] = useState(100);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    fetch('http://localhost:8000/api/categories/', {
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
-    })
-      .then(res => res.json())
-      .then(data => setCategories(data));
-  }, []);
+  const navigateToLogin = () => {
+    // localStorage.removeItem("token");
+    if (window.location.pathname === "/login") return;
+    window.location.href = "/login";
+  };
 
-  const fetchItems = () => {
-    const token = localStorage.getItem('token');
-    let url = 'http://localhost:8000/api/items/?';
+  const fetchItems = (page, size) => {
+    const token = localStorage.getItem("token");
+    let url = `http://localhost:8000/api/items/?`;
     if (query.title) url += `search=${query.title}&`;
     if (query.category) url += `category=${query.category}&`;
     if (query.pub_date) url += `ordering=pub_date&`;
+    if (page) url += `page=${page}&`;
+    if (size) url += `size=${size}&`;
+    console.log("fetch items url:", url);
     fetch(url, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
-      .then(res => res.json())
-      .then(data => setItems(data));
+      .then((res) => {
+        if (res.status === 401) {
+          navigateToLogin();
+          return [];
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setItems(data.data);
+        setTotal(data.total);
+      });
+  };
+
+  const fetchCategories = () => {
+    const token = localStorage.getItem("token");
+    let url = "http://localhost:8000/api/categories/";
+    fetch(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          navigateToLogin();
+          return [];
+        }
+        return res.json();
+      })
+      .then((data) => setCategories(data));
   };
 
   useEffect(() => {
-    fetchItems();
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchItems(1, 10);
+      fetchCategories();
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -46,20 +75,45 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/userinfo" element={<ProtectedRoute><UserInfo /></ProtectedRoute>} />
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Home
-              items={items}
-              categories={categories}
-              query={query}
-              setQuery={setQuery}
-              fetchItems={fetchItems}
-            />
-          </ProtectedRoute>
-        } />
-        <Route path="/article/:id" element={<ProtectedRoute><ArticleDetail /></ProtectedRoute>} />
-        <Route path="/chapter/:id" element={<ProtectedRoute><ChapterDetail /></ProtectedRoute>} />
+        <Route
+          path="/userinfo"
+          element={
+            <ProtectedRoute>
+              <UserInfo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home
+                items={items}
+                categories={categories}
+                query={query}
+                setQuery={setQuery}
+                fetchItems={(page, size) => fetchItems(page, size)}
+                total={total}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/article/:id"
+          element={
+            <ProtectedRoute>
+              <ArticleDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chapter/:id"
+          element={
+            <ProtectedRoute>
+              <ChapterDetail />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

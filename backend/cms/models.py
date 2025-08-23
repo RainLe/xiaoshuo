@@ -50,12 +50,7 @@ class Item(models.Model):
 	pub_date = models.DateTimeField(auto_now_add=True, verbose_name="发表时间")
 	category_id = models.IntegerField(verbose_name="所属栏目ID")
 	author_id = models.IntegerField(verbose_name="作者ID")  # 对应 auth_user 的 id
-	STATUS_CHOICES = (
-		('draft', '草稿'),
-		('unpublished', '未发布'),
-		('published', '已发布'),
-	)
-	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='draft', verbose_name="文章状态")
+	status = models.CharField(max_length=16, default='published', verbose_name="文章状态")
 	@property
 	def chapters(self):
 		"""
@@ -77,10 +72,18 @@ class Chapter(models.Model):
 	"""
 	章节实体对象，属于某一文章，每章内容存储在文档里，数据库保存文件路径。
 	"""
+	STATUS_CHOICES = (
+		('draft', '草稿'),
+		('unpublished', '未发布'),
+		('published', '已发布'),
+	)
 	item_id = models.IntegerField(verbose_name="所属文章ID")
 	title = models.CharField(max_length=200, verbose_name="章节标题")
 	content_file = models.CharField(max_length=255, verbose_name="内容文件路径")
 	order = models.PositiveIntegerField(verbose_name="章节序号")
+	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='draft', verbose_name="文章状态")
+	refuse_reason = models.CharField(max_length=64,  default='', verbose_name="拒绝原因")
+
 	class Meta:
 		verbose_name = "章节"
 		verbose_name_plural = "章节"

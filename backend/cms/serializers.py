@@ -15,10 +15,10 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ['id', 'title', 'summary', 'pub_date', 'category', 'category_id']
+        fields = ['id', 'title', 'summary', 'pub_date', 'category', 'category_id', 'author_id', 'status']
 
 
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
-        fields = ['id', 'item_id', 'title', 'content_file', 'order']
+        fields = ['id', 'item_id', 'title', 'content_file', 'order', 'status',  'refuse_reason']
