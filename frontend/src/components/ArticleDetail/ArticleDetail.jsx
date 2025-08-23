@@ -117,19 +117,7 @@ const ArticleDetail = ({ article }) => {
                     {statusMap[chapter.status] || chapter.status}
                     {chapter.status === "draft" && chapter.refuse_reason && (
                       <Tooltip title={"不通过原因: " + chapter.refuse_reason}>
-                        <span
-                          style={{
-                            marginLeft: 6,
-                            color: "#faad14",
-                            cursor: "pointer",
-                            borderRadius: "50%",
-                            border: "1px solid #faad14",
-                            padding: "0 6px",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          ?
-                        </span>
+                        <span className={styles.refuseIcon}>?</span>
                       </Tooltip>
                     )}
                   </span>
